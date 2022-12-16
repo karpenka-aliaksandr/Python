@@ -6,8 +6,8 @@ print('Программа задает список из n чисел после
 N = int(input('Введите натуральное N: '))
 sequence = {}
 sum_sequence = 0
-for n in range(1,N+1):
-    sequence[n] = round((1+1/n)**n,2)
+for n in range(1, N+1):
+    sequence[n] = round((1+1/n)**n, 2)
     sum_sequence += sequence[n]
 print(sequence)
-print('sum = ',sum_sequence)
+print('sum = ', sum_sequence)

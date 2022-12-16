@@ -6,6 +6,6 @@ print('Программа принимает на вход число N и вы�
 
 N = int(input('Введите натуральное N: '))
 current_product = 1
-for n in range(1,N+1):
+for n in range(1, N+1):
     current_product *= n
     print(current_product, end=' ')

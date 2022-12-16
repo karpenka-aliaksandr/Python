@@ -7,7 +7,7 @@ print('Программа принимает на вход вещественн�
 
 sum_digits = 0
 num_string = input('Введите вещественное число: ')
-num_string_without_separator = num_string.replace('.','').replace(',','')
+num_string_without_separator = num_string.replace('.', '').replace(',', '')
 for i in num_string_without_separator:
     sum_digits = sum_digits + int(i)
-print('Сумма цифр числа ',num_string, ' равна ', sum_digits)
+print('Сумма цифр числа ', num_string, ' равна ', sum_digits)
