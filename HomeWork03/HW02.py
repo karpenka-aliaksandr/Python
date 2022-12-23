@@ -7,5 +7,5 @@
 l = [2, 3, 4, 5, 6]
 l1 = []
 for i in range (int((len(l)+1)/2)):
-    l1.append(l[i]*l[len(l)-1-i])
+    l1.append(l[i]*l[-1-i])
 print(l1)
