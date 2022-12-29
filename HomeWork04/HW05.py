@@ -32,6 +32,19 @@ def Iter():
             file_out.write(str(koef))
     if count1 < len(mn1) or count2 < len(mn2):
         file_out.write('+')
+    
+def Iter1():
+    if step>0:
+        if koef > 1:
+            file_out.write(str(koef)+'*')
+        file_out.write('x')
+        if step > 1:
+            file_out.write('^'+str(step))
+    else:
+        if koef > 0:
+            file_out.write(str(koef))
+    if len(keys) > 0:
+        file_out.write('+')
 
 path_in1 = 'mn1.txt'
 path_in2 = 'mn2.txt'
@@ -48,32 +61,49 @@ mn2.remove('0')
 file_in2.close
 
 file_out = open(path_out, 'w')
-count1 = 0
-count2 = 0
-while count1 < len(mn1) and count2 < len(mn2):
-    if Step(mn1[count1]) == Step(mn2[count2]):
-        step = Step(mn1[count1])
-        koef = Koef(mn1[count1]) + Koef(mn2[count2])
-        count1 += 1
-        count2 += 1     
-    elif Step(mn1[count1]) > Step(mn2[count2]):
-        step = Step(mn1[count1])
-        koef = Koef(mn1[count1])
-        count1 += 1
+# count1 = 0
+# count2 = 0
+# while count1 < len(mn1) and count2 < len(mn2):
+#     if Step(mn1[count1]) == Step(mn2[count2]):
+#         step = Step(mn1[count1])
+#         koef = Koef(mn1[count1]) + Koef(mn2[count2])
+#         count1 += 1
+#         count2 += 1     
+#     elif Step(mn1[count1]) > Step(mn2[count2]):
+#         step = Step(mn1[count1])
+#         koef = Koef(mn1[count1])
+#         count1 += 1
+#     else:
+#         step = Step(mn2[count2])
+#         koef = Koef(mn2[count2])
+#         count2 += 1
+#     Iter()
+# while count1 < len(mn1):
+#      step = Step(mn1[count1])
+#      koef = Koef(mn1[count1])
+#      count1 += 1
+#      Iter()
+# while count2 < len(mn2):
+#     step = Step(mn2[count2])
+#     koef = Koef(mn2[count2])
+#     count2 += 1
+#     Iter()
+
+
+# Второе решение
+dictionary = {}
+for item in mn1:
+    dictionary[Step(item)]=Koef(item)
+for item in mn2:
+    if Step(item) in dictionary.keys():
+        dictionary[Step(item)]+=Koef(item)
     else:
-        step = Step(mn2[count2])
-        koef = Koef(mn2[count2])
-        count2 += 1
-    Iter()
-while count1 < len(mn1):
-     step = Step(mn1[count1])
-     koef = Koef(mn1[count1])
-     count1 += 1
-     Iter()
-while count2 < len(mn2):
-    step = Step(mn2[count2])
-    koef = Koef(mn2[count2])
-    count2 += 1
-    Iter()
+        dictionary[Step(item)]=Koef(item)
+keys = list(dictionary.keys())
+while len(keys) > 0:
+    step = max(keys)
+    keys.remove(step)
+    koef=int(dictionary.pop(step))
+    Iter1()
 file_out.write('=0')
 file_out.close
