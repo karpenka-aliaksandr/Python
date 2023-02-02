@@ -3,18 +3,27 @@
 
 
 import telebot
-
 from telebot import types
+import time
+
 bot = telebot.TeleBot("5988956202:AAGj8irBsJeWefJXeozx9R-5NUAWXic1Nak")
 typeNums = 0
 calcOn = False
 
+def log_add(func):
+    def wrapper(message):
+        with open("HomeWork10/bot_log.scv", 'a',encoding='utf-8') as file_out:
+            file_out.write(f'timestamp = {time.time()}; chat.id = {message.chat.id}; from_user.username = {message.from_user.username}; text = {message.text} \n')
+        func(message)
+    return wrapper
 
 @bot.message_handler(commands=["start"])
+@log_add
 def start(message):
     rem = types.ReplyKeyboardRemove()
-    bot.send_message(message.chat.id, "Хотите запустить калькулятор? Нажмите:\n/calc", reply_markup=rem)
+    bot.send_message(message.from_user.id, "Хотите запустить калькулятор? Нажмите:\n/calc", reply_markup=rem)
 @bot.message_handler(commands=["calc"])
+@log_add
 def calc(message):
     global calcOn
     calcOn = True
@@ -23,9 +32,10 @@ def calc(message):
     key2 = types.KeyboardButton('Комплексные')
     key3 = types.KeyboardButton('Выход')
     mrk.add(key1, key2, key3)
-    bot.send_message(message.chat.id, f'Калькулятор \nСделайте выбор, с какими числами работать', reply_markup=mrk)
+    bot.send_message(message.from_user.id, f'Калькулятор \nСделайте выбор, с какими числами работать', reply_markup=mrk)
 
 @bot.message_handler(content_types=['text'])
+@log_add
 def buttons(message):
     global typeNums
     global calcOn
@@ -35,19 +45,20 @@ def buttons(message):
         key3 = types.KeyboardButton('Выход')
         mrk.add(key3)
         if message.text == 'Рациональные':
-            bot.send_message(message.chat.id, f'Выбран режим рациональных чисел', reply_markup=mrk)
-            bot.send_message(message.chat.id, f'Введите выражение разделяя пробелом по примеру <float + float>')
+            bot.send_message(message.from_user.id, f'Выбран режим рациональных чисел', reply_markup=mrk)
+            bot.send_message(message.from_user.id, f'Введите выражение разделяя пробелом по примеру <float + float>')
             typeNums = 0
             bot.register_next_step_handler(message, controller)
         elif message.text == 'Комплексные':
-            bot.send_message(message.chat.id, f'Выбран режим комплексных чисел', reply_markup=mrk)
-            bot.send_message(message.chat.id, f'Введите выражение разделяя пробелом по примеру <complex / complex>')
+            bot.send_message(message.from_user.id, f'Выбран режим комплексных чисел', reply_markup=mrk)
+            bot.send_message(message.from_user.id, f'Введите выражение разделяя пробелом по примеру <complex / complex>')
             typeNums = 1
             bot.register_next_step_handler(message, controller)
         elif message.text == 'Выход':
             calcOn = False
-            bot.send_message(message.chat.id, f'Вы вышли из программы.\nДля повторного входа нажмите: /calc', reply_markup=rem)
+            bot.send_message(message.from_user.id, f'Вы вышли из программы.\nДля повторного входа нажмите: /calc', reply_markup=rem)
 
+@log_add
 def controller(message):
     if message.text == "Выход":
         buttons(message)
@@ -73,7 +84,7 @@ def controller(message):
         mrk = types.ReplyKeyboardMarkup(resize_keyboard=True)
         key3 = types.KeyboardButton('Выход')
         mrk.add(key3)
-        bot.send_message(message.chat.id, f'Введены неправильные числа или выражение.\n Повторите',reply_markup=mrk)
+        bot.send_message(message.from_user.id, f'Введены неправильные числа или выражение.\n Повторите',reply_markup=mrk)
         bot.register_next_step_handler(message, controller)
         return
     if znak == '+':
@@ -85,7 +96,7 @@ def controller(message):
     elif znak == '/':
         res = div_nums(a, b)
     elif typeNums == 1 and (znak == '//' or znak == '%'):
-        bot.send_message(message.chat.id, f'Для комплексных чисел данное действие не применимо.\n Повторите')
+        bot.send_message(message.from_user.id, f'Для комплексных чисел данное действие не применимо.\n Повторите')
         bot.register_next_step_handler(message, controller)
         return
     elif znak == '//':
@@ -93,10 +104,10 @@ def controller(message):
     elif znak == '%':
         res = div_rem(a, b)
     else: 
-        bot.send_message(message.chat.id, f'Неправильно введен знак.\n Повторите')
+        bot.send_message(message.from_user.id, f'Неправильно введен знак.\n Повторите')
         bot.register_next_step_handler(message, controller)
         return
-    bot.send_message(message.chat.id, str(res))
+    bot.send_message(message.from_user.id, str(res))
     calc(message)
 
     
